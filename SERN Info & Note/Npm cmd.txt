@@ -9,3 +9,7 @@ npm install --save-dev sequelize sequelize-cli@6.2.0
 then cd to src: npx sequelize-cli init
 then exit out of src
 npm install --save mysql2@2.2.5
+19/8/22
+npm install --save bcrypt@5.0.1
+or
+npm install --save bcryptjs@2.4.3
