@@ -36,7 +36,7 @@ class ManageSchedule extends Component {
             })
         }
 
-        if (prevProps.allScheduleTime != this.props.allScheduleTime) {
+        if (prevProps.allScheduleTime !== this.props.allScheduleTime) {
             let data = this.props.allScheduleTime;
             if (data && data.length > 0) {
                 //method 2 -> less coding!!
