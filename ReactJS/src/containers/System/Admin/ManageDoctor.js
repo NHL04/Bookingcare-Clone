@@ -148,7 +148,7 @@ class ManageDoctor extends Component {
 
     handleSaveContentMarkdown = () => {
         let { hasOldData } = this.state;
-        console.log("check state: ", this.state);
+        // console.log("check state: ", this.state);
         this.props.saveDetailDoctor({
             contentHTML: this.state.contentHTML,
             contentMarkdown: this.state.contentMarkdown,
@@ -257,7 +257,7 @@ class ManageDoctor extends Component {
     }
 
     render() {
-        console.log("check state render: ", this.state);
+        // console.log("check state render: ", this.state);
         let { hasOldData } = this.state;
         return (
             <div className="manage-doctor-container">

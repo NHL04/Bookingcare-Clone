@@ -6,7 +6,7 @@ import HomeHeader from '../../HomePage/HomeHeader';
 import DoctorSchedule from '../Doctor/DoctorSchedule';
 import DoctorExtraInfor from '../Doctor/DoctorExtraInfor';
 import ProfileDoctor from '../Doctor/ProfileDoctor';
-import { getDetailSpecialtyById, getAllCodeService } from '../../../services/userService';
+import { getAllDetailSpecialtyById, getAllCodeService } from '../../../services/userService';
 import _ from 'lodash';
 import { LANGUAGES } from '../../../utils';
 
@@ -24,7 +24,7 @@ class DetailSpecialty extends Component {
     async componentDidMount() {
         if (this.props.match && this.props.match.params && this.props.match.params.id) {
             let id = this.props.match.params.id;
-            let res = await getDetailSpecialtyById({
+            let res = await getAllDetailSpecialtyById({
                 id: id,
                 location: 'ALL'
             });
@@ -43,10 +43,21 @@ class DetailSpecialty extends Component {
                     }
                 }
 
+                let dataProvince = resProvince.data;
+                if (dataProvince && dataProvince.length > 0) {
+                    dataProvince.unshift({
+                        createAt: null,
+                        keyMap: "ALL",
+                        type: "PROVINCE",
+                        valueEn: "ALL",
+                        valueVi: "Toàn quốc",
+                    })
+                }
+
                 this.setState({
                     dataDetailSpecialty: res.data,
                     arrDoctorId: arrDoctorId,
-                    listProvince: resProvince.data
+                    listProvince: dataProvince ? dataProvince : []
                 })
             }
         }
@@ -58,8 +69,35 @@ class DetailSpecialty extends Component {
         }
     }
 
-    handleOnChangeSelect = (event) => {
-        console.log("check select onchange: ", event.target.value);
+    handleOnChangeSelect = async (event) => {
+        if (this.props.match && this.props.match.params && this.props.match.params.id) {
+            let id = this.props.match.params.id;
+            let location = event.target.value;
+
+            let res = await getAllDetailSpecialtyById({
+                id: id,
+                location: location
+            });
+
+            if (res && res.errCode === 0) {
+                let data = res.data;
+                let arrDoctorId = [];
+                if (data && !_.isEmpty(res.data)) {
+                    let arr = data.doctorSpecialty;
+                    if (arr && arr.length > 0) {
+                        arr.map(item => {
+                            arrDoctorId.push(item.doctorId)
+                        })
+                    }
+                }
+
+                this.setState({
+                    dataDetailSpecialty: res.data,
+                    arrDoctorId: arrDoctorId,
+                })
+            }
+
+        }
     }
 
     render() {
@@ -102,6 +140,8 @@ class DetailSpecialty extends Component {
                                             <ProfileDoctor
                                                 doctorId={item}
                                                 isShowDescriptionDoctor={true}
+                                                isSHowLinkDetail={true}
+                                                isShowPrice={false}
                                             // dataTime={dataTime}
                                             />
                                         </div>
