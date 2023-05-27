@@ -33,6 +33,86 @@ let createClinic = (data) => {
     })
 }
 
+let getAllClinic = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let data = await db.Clinic.findAll({
+
+            });
+            if (data && data.length > 0) {
+                data.map(item => {
+                    item.image = new Buffer(item.image, 'base64').toString('binary');
+                    return item;
+                })
+            }
+            resolve({
+                errCode: 0,
+                errMessage: 'ok',
+                data
+            });
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let getDetailClinicById = (inputId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!inputId) {
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing parameter'
+                })
+            } else {
+                let data = await db.Clinic.findOne({
+                    where: {
+                        id: inputId
+                    },
+                    attributes: ['name', 'address', 'descriptionHTML', 'descriptionMarkdown'],
+                })
+
+                if (data) {
+                    let doctorClinic = [];
+
+                    //if-else-location might need for later use
+                    // if (location === "ALL") {
+
+                    //find all
+                    doctorClinic = await db.Doctor_Infor.findAll({
+                        where: { clinicId: inputId },
+                        attributes: ['doctorId', 'provinceId'],
+                    })
+
+                    // } else {
+                    //     //find by location
+                    //     doctorSpecialty = await db.Doctor_Infor.findAll({
+                    //         where: {
+                    //             specialtyId: inputId,
+                    //             provinceId: location
+                    //         },
+                    //         attributes: ['doctorId', 'provinceId'],
+                    //     })
+                    // }
+
+                    data.doctorClinic = doctorClinic; //append doctorClinic field into data obj above
+
+                } else data = {};
+
+                resolve({
+                    errCode: 0,
+                    errMessage: 'ok',
+                    data
+                });
+            }
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 module.exports = {
-    createClinic: createClinic
+    createClinic: createClinic,
+    getAllClinic: getAllClinic,
+    getDetailClinicById: getDetailClinicById
 }
