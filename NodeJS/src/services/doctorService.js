@@ -420,11 +420,51 @@ let getListPatientForDoctor = (doctorId, date) => {
                                 }
                             ],
                         },
+                        {
+                            model: db.Allcode, as: 'timeTypeDataPatient', attributes: ['valueEn', 'valueVi']
+                        },
                     ],
                     raw: false,
                     nest: true
                 })
 
+                resolve({
+                    errCode: 0,
+                    data: data
+                })
+            }
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let sendRemedy = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!data.email || !data.doctorId || !data.patientId || !data.timeType) {
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing required parameters'
+                })
+            } else {
+                //update patient booking status
+                let appointment = await db.Booking.findOne({
+                    where: {
+                        doctorId: data.doctorId,
+                        patientId: data.patientId,
+                        timeType: data.timeType,
+                        statusId: 'S2'
+                    },
+                    raw: false //set to false -> instance of sequelize, default raw = true
+                })
+
+                if (appointment) {
+                    appointment.statusId = 'S3'
+                    await appointment.save();
+                }
+
+                //send email remedy
                 resolve({
                     errCode: 0,
                     data: data
@@ -445,5 +485,6 @@ module.exports = {
     getScheduleByDate: getScheduleByDate,
     getExtraInforDoctorById: getExtraInforDoctorById,
     getProfileDoctorById: getProfileDoctorById,
-    getListPatientForDoctor: getListPatientForDoctor
+    getListPatientForDoctor: getListPatientForDoctor,
+    sendRemedy: sendRemedy
 }

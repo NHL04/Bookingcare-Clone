@@ -129,11 +129,12 @@ class BookingModal extends Component {
 
         let res = await postPatientBookAppointment({
             fullName: this.state.fullName,
-            phoneNumber: this.state.fullName,
+            phoneNumber: this.state.phoneNumber,    //need fix this line
             email: this.state.email,
             address: this.state.address,
             reason: this.state.reason,
-            date: date,
+            date: this.props.dataTime.date,
+            birthday: date,
             selectedGender: this.state.selectedGender.value,
             doctorId: this.state.doctorId,
             timeType: this.state.timeType,
