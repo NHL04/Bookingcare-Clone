@@ -13,7 +13,7 @@ class RemedyModal extends Component {
         super(props);
         this.state = {
             email: '',
-            imageBase64: ''
+            imgBase64: ''
         }
     }
 
@@ -45,7 +45,7 @@ class RemedyModal extends Component {
         if (file) {
             let base64 = await CommonUtils.getBase64(file);
             this.setState({
-                imageBase64: base64
+                imgBase64: base64
             })
         }
     }
