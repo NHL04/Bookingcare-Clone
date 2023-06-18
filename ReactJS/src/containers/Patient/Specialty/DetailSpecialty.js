@@ -101,6 +101,7 @@ class DetailSpecialty extends Component {
     }
 
     render() {
+        //bug when choose location
         // console.log("check res: ", this.state);
         let { arrDoctorId, dataDetailSpecialty, listProvince } = this.state;
         let { language } = this.props;
